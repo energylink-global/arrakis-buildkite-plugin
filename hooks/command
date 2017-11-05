@@ -16,10 +16,10 @@ variable "platform" {}
 module "pipeline" {
   source = "git::ssh://git@bitbucket.org/cozero/buildkite.git//pipeline"
 
-  environment = "${var.environment}"
+  environment = "\${var.environment}"
   master      = "${BUILDKITE_PLUGINS_ARRAKIS_MASTER:-"false"}"
-  platform    = "${var.platform}"
-  queue       = "${var.platform}-master"
+  platform    = "\${var.platform}"
+  queue       = "\${var.platform}-master"
 }
 TFVARS
 
