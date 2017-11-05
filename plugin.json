@@ -1,0 +1,6 @@
+{
+  "name": "arrakis",
+  "description": "A boilerplate dynamic pipeline for terraform",
+  "author": "@cozero",
+  "public": true
+}

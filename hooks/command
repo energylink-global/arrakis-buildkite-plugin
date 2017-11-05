@@ -1,0 +1,45 @@
+#!/bin/bash
+
+set -euo pipefail
+
+echo "--- :bash: Cleaning up any old state..."
+rm -rf .terraform
+rm -rf .buildkite/terraform.tfstate .buildkite/terraform.tfstate.backup
+
+echo "--- :bash: Writing pipeline.tf"
+
+cat <<TFVARS > .buildkite/pipeline.tf
+variable "environment" {}
+
+variable "platform" {}
+
+module "pipeline" {
+  source = "git::ssh://git@bitbucket.org/cozero/buildkite.git//pipeline"
+
+  environment = "${var.environment}"
+  master      = "${BUILDKITE_PLUGINS_ARRAKIS_MASTER:-"false"}"
+  platform    = "${var.platform}"
+  queue       = "${var.platform}-master"
+}
+TFVARS
+
+# we use Terraform version 0.9.11 here as we just need Terraform to load up a
+# terraform.tfvars file and template a pipeline file. We may lock to a more
+# descriptive tag name such as 'pipeline' - matb.
+
+echo "--- :terraform: get"
+docker run --rm \
+	-e SSH_AUTH_SOCK=$SSH_AUTH_SOCK \
+	-v $(pwd)/.buildkite:/config \
+	-v /var/lib/buildkite-agent/.ssh/known_hosts:/root/.ssh/known_hosts:ro \
+	-v $(dirname $SSH_AUTH_SOCK):$(dirname $SSH_AUTH_SOCK) \
+	-w /config cozero/terraform:0.9.11 get
+
+echo "--- :terraform: apply"
+docker run --rm \
+	-v $(pwd)/.buildkite:/config \
+	-v $(pwd)/terraform.tfvars:/config/terraform.tfvars \
+	-w /config cozero/terraform:0.9.11 apply
+
+echo "--- :buildkite: pipeline upload"
+cat .buildkite/pipeline.yml | buildkite-agent pipeline upload
