@@ -18,7 +18,7 @@ To use, simply create your pipline.yml as follows
 ```
 # pipeline.yml
 steps:
-  - label: ":unicorn_face: Building pipeline :face_punch:"
+  - label: ":unicorn_face: Building pipeline :facepunch:"
     plugins:
       github.com/cozero/arrakis-buildkite-plugin#v0.0.1:
         master: true

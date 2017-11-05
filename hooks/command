@@ -9,8 +9,9 @@ rm -rf .buildkite/terraform.tfstate .buildkite/terraform.tfstate.backup
 echo "--- :bash: Writing pipeline.tf"
 
 echo "--- debug"
-echo $BUILDKITE_PLUGINS_ARRAKIS_QUEUE
-echo "${BUILDKITE_PLUGINS_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
+env
+echo $BUILDKITE_PLUGIN_ARRAKIS_QUEUE
+echo "${BUILDKITE_PLUGIN_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
 
 cat <<TFVARS > .buildkite/pipeline.tf
 variable "environment" {}
@@ -21,9 +22,9 @@ module "pipeline" {
   source = "git::ssh://git@bitbucket.org/cozero/buildkite.git//pipeline"
 
   environment = "\${var.environment}"
-  master      = "${BUILDKITE_PLUGINS_ARRAKIS_MASTER:-"false"}"
+  master      = "${BUILDKITE_PLUGIN_ARRAKIS_MASTER:-"false"}"
   platform    = "\${var.platform}"
-  queue       = "${BUILDKITE_PLUGINS_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
+  queue       = "${BUILDKITE_PLUGIN_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
 }
 TFVARS
 
