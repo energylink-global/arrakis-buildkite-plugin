@@ -8,11 +8,6 @@ rm -rf .buildkite/terraform.tfstate .buildkite/terraform.tfstate.backup
 
 echo "--- :bash: Writing pipeline.tf"
 
-echo "--- debug"
-env
-echo $BUILDKITE_PLUGIN_ARRAKIS_QUEUE
-echo "${BUILDKITE_PLUGIN_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
-
 cat <<TFVARS > .buildkite/pipeline.tf
 variable "environment" {}
 
@@ -25,10 +20,9 @@ module "pipeline" {
   master      = "${BUILDKITE_PLUGIN_ARRAKIS_MASTER:-"false"}"
   platform    = "\${var.platform}"
   queue       = "${BUILDKITE_PLUGIN_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
+  tf_version  = "${BUILDKITE_PLUGIN_ARRAKIS_TF_VERSION:-"stable"}"
 }
 TFVARS
-
-cat .buildkite/pipeline.tf
 
 # we use Terraform version 0.9.11 here as we just need Terraform to load up a
 # terraform.tfvars file and template a pipeline file. We may lock to a more

@@ -23,6 +23,7 @@ steps:
       github.com/cozero/arrakis-buildkite-plugin#v0.0.1:
         master: true
         queue: my-infrastructure-stack
+        tf_version: stable
     agents:
       queue: my-infrastructure-stack
 ```
