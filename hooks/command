@@ -19,7 +19,7 @@ module "pipeline" {
   environment = "\${var.environment}"
   master      = "${BUILDKITE_PLUGINS_ARRAKIS_MASTER:-"false"}"
   platform    = "\${var.platform}"
-  queue       = "\${var.platform}-master"
+  queue       = "${BUILDKITE_PLUGINS_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
 }
 TFVARS
 

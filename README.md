@@ -5,7 +5,7 @@
 MIT (see [LICENCE](LICENCE))
 
 @TODO
-![Arrakis](sandworm.jpg)
+![Arrakis](arrakis.jpg)
 
 ## Synopsis
 
@@ -22,6 +22,7 @@ steps:
     plugins:
       github.com/cozero/arrakis-buildkite-plugin#v0.0.1:
         master: true
+        queue: my-infrastructure-stack
     agents:
       queue: my-infrastructure-stack
 ```
