@@ -4,7 +4,6 @@
 
 MIT (see [LICENCE](LICENCE))
 
-@TODO
 ![Arrakis](arrakis.jpg)
 
 ## Synopsis
