@@ -15,7 +15,7 @@ Dynamically generates a buildkite pipeline to test and deploy your terraform inf
 To use, simply create your pipline.yml as follows
 
 ```
-# pipeline.yml
+# .buildkite/pipeline.yml
 steps:
   - label: ":unicorn_face: Building pipeline :facepunch:"
     plugins:
@@ -25,6 +25,15 @@ steps:
         tf_version: stable
     agents:
       queue: my-infrastructure-stack
+```
+
+You'll also need to specify terraform variables for "environment" and "platform" in your root terraform.tfvars - these are passed through to the dynamic pipeline.
+
+```
+# terraform.tfvars
+
+variable environment = "production"
+variable platform    = "energylink"
 ```
 
 ## FAQ
