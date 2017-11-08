@@ -6,6 +6,9 @@ echo "--- :bash: Cleaning up any old state..."
 rm -rf .terraform
 rm -rf .buildkite/terraform.tfstate .buildkite/terraform.tfstate.backup
 
+echo "debugging"
+env
+
 echo "--- :bash: Writing pipeline.tf"
 
 cat <<TFVARS > .buildkite/pipeline.tf
