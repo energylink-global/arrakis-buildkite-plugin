@@ -6,8 +6,12 @@ echo "--- :bash: Cleaning up any old state..."
 rm -rf .terraform
 rm -rf .buildkite/terraform.tfstate .buildkite/terraform.tfstate.backup
 
-echo "debugging"
-env
+# choose between a master or slave account configuration
+if [[ ${BUILDKITE_PLUGIN_ARRAKIS_MASTER:-"false"} == "false" ]]; then
+  MASTER_OR_PARTNER="partner     = \"\${var.partner}\""
+else
+  MASTER_OR_PARTNER="master      = true"
+fi
 
 echo "--- :bash: Writing pipeline.tf"
 
@@ -20,7 +24,7 @@ module "pipeline" {
   source = "git::ssh://git@bitbucket.org/cozero/buildkite.git//pipeline"
 
   environment = "\${var.environment}"
-  master      = "${BUILDKITE_PLUGIN_ARRAKIS_MASTER:-"false"}"
+  $MASTER_OR_PARTNER
   platform    = "\${var.platform}"
   queue       = "${BUILDKITE_PLUGIN_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
   tf_version  = "${BUILDKITE_PLUGIN_ARRAKIS_TF_VERSION:-"stable"}"
