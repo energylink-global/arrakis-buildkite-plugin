@@ -6,13 +6,13 @@ echo "--- :bash: Cleaning up any old state..."
 rm -rf .terraform
 rm -rf .buildkite/terraform.tfstate .buildkite/terraform.tfstate.backup
 
-# choose between a master or slave account configuration
 echo "--- :bash: Writing pipeline.tf"
-if [[ ${BUILDKITE_PLUGIN_ARRAKIS_MASTER:-"false"} == "false" ]]; then
-  cat <<TFVARS > .buildkite/pipeline.tf
+cat <<TFVARS > .buildkite/pipeline.tf
 variable "environment" {}
 
-variable "partner" {}
+variable "partner" {
+  default = ""
+}
 
 variable "platform" {}
 
@@ -20,33 +20,14 @@ module "pipeline" {
   source = "git::ssh://git@bitbucket.org/cozero/buildkite.git//pipeline"
 
   environment = "\${var.environment}"
+  master      = ${BUILDKITE_PLUGIN_ARRAKIS_MASTER:-false}
   partner     = "\${var.partner}"
   platform    = "\${var.platform}"
   queue       = "${BUILDKITE_PLUGIN_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
+  state_file  = "${BUILDKITE_PLUGIN_ARRAKIS_STATE_FILE:-""}"
   tf_version  = "${BUILDKITE_PLUGIN_ARRAKIS_TF_VERSION:-"stable"}"
 }
 TFVARS
-else
-  cat <<TFVARS > .buildkite/pipeline.tf
-variable "environment" {}
-
-variable "platform" {}
-
-module "pipeline" {
-  source = "git::ssh://git@bitbucket.org/cozero/buildkite.git//pipeline"
-
-  environment = "\${var.environment}"
-  master      = true
-  platform    = "\${var.platform}"
-  queue       = "${BUILDKITE_PLUGIN_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
-  tf_version  = "${BUILDKITE_PLUGIN_ARRAKIS_TF_VERSION:-"stable"}"
-}
-TFVARS
-fi
-
-
-
-
 
 # we use Terraform version 0.9.11 here as we just need Terraform to load up a
 # terraform.tfvars file and template a pipeline file. We may lock to a more
