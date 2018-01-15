@@ -26,6 +26,7 @@ module "pipeline" {
   queue       = "${BUILDKITE_PLUGIN_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
   state_file  = "${BUILDKITE_PLUGIN_ARRAKIS_STATE_FILE:-""}"
   tf_version  = "${BUILDKITE_PLUGIN_ARRAKIS_TF_VERSION:-"stable"}"
+  unify       = "${BUILDKITE_PLUGIN_ARRAKIS_UNIFY:-true}"
 }
 TFVARS
 

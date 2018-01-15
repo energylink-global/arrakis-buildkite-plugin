@@ -36,8 +36,10 @@ variable environment = "production"
 variable platform    = "energylink"
 ```
 
-## FAQ
+## Options
 
-### Oh man this is great
-
-Technically that's not a question, but thanks anyway
+* `master` - run pipeline mode for a master account
+* `queue` - used to set the buildkite agent queue
+* `state_file` - custom path for the terraform state file
+* `tf_version` - used to specify the terraform docker tag that you would like to use
+* `unify` - set to true to run in "unification" mode, with multi-environment tfvars stored in namespaced files
