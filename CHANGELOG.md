@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.1.0 (2018-01-16)
+
+Full unification release
+
 ## v0.0.3 (2018-01-15)
 
 Support for reunification of Prod/Staging branches.
