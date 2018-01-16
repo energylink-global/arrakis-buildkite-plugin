@@ -38,7 +38,10 @@ variable platform    = "energylink"
 
 ## Options
 
+* `environment` - override the environment against which to test
 * `master` - run pipeline mode for a master account
 * `queue` - used to set the buildkite agent queue
 * `state_file` - custom path for the terraform state file
+* `state_file_prefix` - custom prefix for the terraform state file
 * `tf_version` - used to specify the terraform docker tag that you would like to use
+* `tf_vars_file` - a custom path for the tf vars file
