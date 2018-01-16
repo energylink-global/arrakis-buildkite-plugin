@@ -61,8 +61,3 @@ docker run --rm \
 
 echo "--- :buildkite: pipeline upload"
 cat .buildkite/pipeline.yml | buildkite-agent pipeline upload
-
-echo "--- :bash: Tidying up..."
-rm -rf .terraform
-rm -rf .buildkite/.terraform
-rm -rf .buildkite/terraform.tfstate .buildkite/terraform.tfstate.backup

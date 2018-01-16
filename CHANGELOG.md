@@ -2,7 +2,7 @@
 
 ## v0.1.0 (2018-01-16)
 
-Full unification release
+Full unification of prod/staging branches
 
 ## v0.0.3 (2018-01-15)
 
