@@ -7,41 +7,52 @@ rm -rf .terraform
 rm -rf .buildkite/.terraform
 rm -rf .buildkite/terraform.tfstate .buildkite/terraform.tfstate.backup
 
-# set the environment based on $BUILDKITE_BRANCH
-case "${BUILDKITE_BRANCH:-staging}" in
-master)
-  environment=production;;
+# DETERMINE how many tfvars files we have
+# Note: this will fail if no files exist
+vars_file_count=$(ls *.tfvars | wc -l | awk '{print $1}')
+
+case $vars_file_count in
+1)
+  tf_vars_file=$(ls *.tfvars);;
 *)
-  environment=staging;;
+  tf_vars_file=${BUILDKITE_PLUGIN_ARRAKIS_TF_VARS_FILE:-"staging.tfvars"}
 esac
 
-# override branch environment based on plugin
-environment=${BUILDKITE_PLUGIN_ARRAKIS_ENVIRONMENT:-$environment}
-
-tfvars_file=${BUILDKITE_PLUGIN_ARRAKIS_TF_VARS_FILE:-"terraform-$environment.tfvars"}
-
 echo "--- :bash: Writing pipeline.tf"
+# THIS IS YOUR ROOT MODULE
 cat <<TFVARS > .buildkite/pipeline.tf
+
+# Required to control branch filtering, retrieve secrets
 variable "environment" {}
 
-variable "partner" {
-  default = ""
+variable "platform" {}
+
+variable "master_remote_state" {
+  description = "A map of S3 bucket and key that points to the master remote state file"
+  type        = "map"
+  default     = {}
 }
 
-variable "platform" {}
+variable "remote_state" {
+  description = "A map of S3 bucket and key that points to the remote state file"
+  type        = "map"
+}
 
 module "pipeline" {
   source = "git::ssh://git@bitbucket.org/cozero/buildkite.git//pipeline"
 
-  environment        = "${environment}"
-  master             = ${BUILDKITE_PLUGIN_ARRAKIS_MASTER:-false}
-  partner            = "\${var.partner}"
-  platform           = "\${var.platform}"
-  queue              = "${BUILDKITE_PLUGIN_ARRAKIS_QUEUE:-"\${var.platform}-master"}"
-  state_file         = "${BUILDKITE_PLUGIN_ARRAKIS_STATE_FILE:-""}"
-  state_file_prefix  = "${BUILDKITE_PLUGIN_ARRAKIS_STATE_FILE_PREFIX:-""}"
-  tf_version         = "${BUILDKITE_PLUGIN_ARRAKIS_TF_VERSION:-"stable"}"
-  tfvars_file        = "${BUILDKITE_PLUGIN_ARRAKIS_TF_VARS_FILE:-""}"
+  # Variables that are required in your blob.tfvars file
+  environment          = "\${var.environment}"
+  platform             = "\${var.platform}"
+  remote_state         = "\${var.remote_state}"
+  master_remote_state  = "\${var.master_remote_state}"
+
+  # Other madatory variables logically determined by this plugin
+  tf_vars_file = "${tf_vars_file}"
+
+  # optional overrides
+  queue      = "${BUILDKITE_PLUGIN_ARRAKIS_QUEUE:-$BUILDKITE_AGENT_META_DATA_QUEUE}"
+  tf_version = "${BUILDKITE_PLUGIN_ARRAKIS_TF_VERSION:-"stable"}"
 }
 TFVARS
 
@@ -56,7 +67,7 @@ docker run --rm \
 echo "--- :terraform: apply"
 docker run --rm \
 	-v $(pwd)/.buildkite:/config \
-	-v $(pwd)/$tfvars_file:/config/terraform.tfvars \
+	-v $(pwd)/$tf_vars_file:/config/terraform.tfvars \
 	-w /config cozero/terraform:0.11.2 apply -auto-approve
 
 echo "--- :buildkite: pipeline upload"
