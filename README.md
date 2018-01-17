@@ -19,8 +19,7 @@ To use, simply create your pipline.yml as follows
 steps:
   - label: ":unicorn_face: Building pipeline :facepunch:"
     plugins:
-      github.com/cozero/arrakis-buildkite-plugin#v0.0.1:
-        master: true
+      github.com/cozero/arrakis-buildkite-plugin#v0.2.0:
         queue: my-infrastructure-stack
         tf_version: stable
     agents:
@@ -33,15 +32,28 @@ You'll also need to specify terraform variables for "environment" and "platform"
 # terraform.tfvars
 
 variable environment = "production"
+
 variable platform    = "energylink"
+
+variable remote_state {
+  # overridden by master_remote_state if provided
+  bucket = "my-great-bucket"
+  key    = "my-great-key"
+  # optional and overriden by master_remote_state if provided
+  region = "ap-southeast-2"
+}
+
+# optional
+variable master_remote_state {
+  bucket = "my-great-bucket"
+  key    = "my-great-master-key"
+  # optional
+  region = "ap-southeast-2"
+}
+
 ```
 
 ## Options
 
-* `environment` - override the environment against which to test
-* `master` - run pipeline mode for a master account
 * `queue` - used to set the buildkite agent queue
-* `state_file` - custom path for the terraform state file
-* `state_file_prefix` - custom prefix for the terraform state file
 * `tf_version` - used to specify the terraform docker tag that you would like to use
-* `tf_vars_file` - a custom path for the tf vars file
