@@ -56,4 +56,38 @@ variable master_remote_state {
 ## Options
 
 * `queue` - used to set the buildkite agent queue
+* `tf_vars_file` - the file you'd like to target
 * `tf_version` - used to specify the terraform docker tag that you would like to use
+
+## Extra
+
+This plugin has a three main requirements-
+
+* Ensure that plans are always run against the correct environment.
+* Ensure that we can update terraform easily and centrally
+* Enable a traditional dev » staging » production workflow
+
+Terraform updates often require tweaks to the  init / plan / apply plans - by centrally managing these commands (via the Bitbucket/Buildkite module), repos more easily be kept up to date.
+
+Multi environment repos typically have 2 different state files - production and staging. It could be disastrous to apply a terraform plan against the wrong state file.
+
+In order to overcome the multi-environment problem, we simply keep the two tfvars files in the same repo
+
+* production.tfvars
+* staging.tfvars
+
+The tfvars file contain a reference to the state file they will be applied against - thereby preventing the wrong tfvars being applied to the wrong state.
+
+## Tfvars file selection logic
+
+There are three ways to select which tfvars file to run when you call this plugin:
+
+1. Commit just a single tfvars file to your repo. We'll use that one.
+
+2. Specify the tfvars file in the plugin with the `tf_vars_file` variable. We'll use that one.
+
+3. Don't do either of the above. We'll use `staging.tfvars`.
+
+## masterplan stage
+
+If you run this plugin on the staging branch, you get an extra magic pipeline step called masterplan. This basically triggers a new build from this commit against production.tfvars. This will encourage you to continually deploy workign changes from staging to production.
