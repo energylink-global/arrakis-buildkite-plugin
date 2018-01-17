@@ -11,11 +11,20 @@ rm -rf .buildkite/terraform.tfstate .buildkite/terraform.tfstate.backup
 # Note: this will fail if no files exist
 vars_file_count=$(ls *.tfvars | wc -l | awk '{print $1}')
 
+branch=${BUILDKITE_BRANCH//master/production}
+
 case $vars_file_count in
 1)
   tf_vars_file=$(ls *.tfvars);;
 *)
-  tf_vars_file=${BUILDKITE_PLUGIN_ARRAKIS_TF_VARS_FILE:-"staging.tfvars"}
+  # default case
+  tf_vars_file=staging.tfvars
+  # override if branch matches
+  if [ -e $branch.tfvars ]; then
+    tf_vars_file=$branch.tfvars
+  fi
+  # let the user of the plugin override
+  tf_vars_file=${BUILDKITE_PLUGIN_ARRAKIS_TF_VARS_FILE:-$tf_vars_file};;
 esac
 
 echo "--- :bash: Writing pipeline.tf"
