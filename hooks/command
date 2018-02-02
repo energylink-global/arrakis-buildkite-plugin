@@ -48,7 +48,7 @@ variable "remote_state" {
 }
 
 module "pipeline" {
-  source = "git::ssh://git@bitbucket.org/cozero/buildkite.git//pipeline"
+  source = "git::ssh://git@bitbucket.org/cozero/buildkite.git?ref=chamber//pipeline"
 
   # Variables that are required in your blob.tfvars file
   environment          = "\${var.environment}"
@@ -71,13 +71,13 @@ docker run --rm \
 	-v $(pwd)/.buildkite:/config \
 	-v /var/lib/buildkite-agent/.ssh/known_hosts:/root/.ssh/known_hosts:ro \
 	-v $(dirname $SSH_AUTH_SOCK):$(dirname $SSH_AUTH_SOCK) \
-	-w /config cozero/terraform:0.11.2 init
+	-w /config cozero/terraform:0.11.3 init
 
 echo "--- :terraform: apply"
 docker run --rm \
 	-v $(pwd)/.buildkite:/config \
 	-v $(pwd)/$tf_vars_file:/config/terraform.tfvars \
-	-w /config cozero/terraform:0.11.2 apply -auto-approve
+	-w /config cozero/terraform:0.11.3 apply -auto-approve
 
 echo "--- :buildkite: pipeline upload"
 cat .buildkite/pipeline.yml | buildkite-agent pipeline upload
