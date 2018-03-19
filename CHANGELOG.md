@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.3.1 (2018-03-19)
+
+Locked to working Remote module v1.4.1.
+
 ## v0.1.0 (2018-01-16)
 
 Full unification of prod/staging branches
