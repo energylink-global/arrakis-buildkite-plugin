@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.3.2 (2018-03-22)
+
+Locked to working Remote module v1.5.0. Includes support for remotely triggerable deployments.
+
+
 ## v0.3.1 (2018-03-19)
 
 Locked to working Remote module v1.4.1.
