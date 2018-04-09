@@ -48,7 +48,7 @@ variable "remote_state" {
 }
 
 module "pipeline" {
-  source = "git::ssh://git@bitbucket.org/cozero/buildkite.git?ref=v1.5.0//pipeline"
+  source = "git::ssh://git@bitbucket.org/cozero/buildkite.git?ref=v2.0.0-rc//pipeline"
 
   # Variables that are required in your blob.tfvars file
   environment          = "\${var.environment}"
