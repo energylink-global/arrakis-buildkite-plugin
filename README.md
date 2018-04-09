@@ -26,14 +26,12 @@ steps:
       queue: my-infrastructure-stack
 ```
 
-You'll also need to specify terraform variables for "environment" and "platform" in your root terraform.tfvars - these are passed through to the dynamic pipeline.
+You'll also need to specify terraform variables for "environment" in your root terraform.tfvars - these are passed through to the dynamic pipeline.
 
 ```
 # terraform.tfvars
 
 variable environment = "production"
-
-variable platform    = "energylink"
 
 variable remote_state {
   # overridden by master_remote_state if provided
