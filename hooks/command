@@ -34,8 +34,6 @@ cat <<TFVARS > .buildkite/pipeline.tf
 # Required to control branch filtering, retrieve secrets
 variable "environment" {}
 
-variable "platform" {}
-
 variable "master_remote_state" {
   description = "A map of S3 bucket and key that points to the master remote state file"
   type        = "map"
@@ -52,7 +50,6 @@ module "pipeline" {
 
   # Variables that are required in your blob.tfvars file
   environment          = "\${var.environment}"
-  platform             = "\${var.platform}"
   remote_state         = "\${var.remote_state}"
   master_remote_state  = "\${var.master_remote_state}"
 
