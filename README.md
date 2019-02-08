@@ -19,9 +19,9 @@ To use, simply create your pipline.yml as follows
 steps:
   - label: ":unicorn_face: Building pipeline :facepunch:"
     plugins:
-      github.com/cozero/arrakis-buildkite-plugin#v0.2.0:
-        queue: my-infrastructure-stack
-        tf_version: stable
+      - github.com/cozero/arrakis-buildkite-plugin#v0.2.0:
+          queue: my-infrastructure-stack
+          tf_version: stable
     agents:
       queue: my-infrastructure-stack
 ```
